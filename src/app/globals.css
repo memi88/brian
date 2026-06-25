@@ -1,26 +1,73 @@
 @import "tailwindcss";
 
+@theme {
+  /* Design system — Brain Narrative */
+
+  /* Colors */
+  --color-primary: #6E8B74;
+  --color-primary-dark: #47624d;
+  --color-primary-light: #AFC6B4;
+  --color-secondary: #AFC6B4;
+  --color-tertiary: #A5787F;
+  --color-neutral: #777775;
+
+  --color-surface: #faf9f6;
+  --color-surface-dim: #dadad7;
+  --color-surface-low: #f4f4f0;
+  --color-surface-container: #eeeeea;
+  --color-surface-high: #e9e8e5;
+  --color-surface-highest: #e3e2df;
+
+  --color-on-surface: #1a1c1a;
+  --color-on-surface-variant: #424842;
+  --color-text-secondary: #69706B;
+
+  --color-outline: #737972;
+  --color-outline-variant: #c2c8c0;
+  --color-border: #D8DDD7;
+
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+
+  /* Typography */
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  --text-display-lg: 32px;
+  --text-headline-md: 24px;
+  --text-headline-sm: 20px;
+  --text-body-lg: 18px;
+  --text-body-md: 16px;
+  --text-body-sm: 14px;
+  --text-label-md: 14px;
+  --text-label-sm: 12px;
+
+  /* Border radius */
+  --radius-sm: 0.25rem;
+  --radius-DEFAULT: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Spacing (8pt grid) */
+  --spacing-xs: 8px;
+  --spacing-sm: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 32px;
+  --spacing-xl: 48px;
+  --spacing-xxl: 64px;
+
+  /* Shadows */
+  --shadow-float: 0px 4px 12px rgba(46, 49, 47, 0.05);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: theme(--color-surface);
+  --foreground: theme(--color-on-surface);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }

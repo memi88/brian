@@ -6,14 +6,27 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "build:worker": "opennextjs-cloudflare build",
+    "dev:worker": "wrangler dev",
+    "deploy": "opennextjs-cloudflare deploy",
+    "db:apply:local": "wrangler d1 execute brain-db --local --file=prisma/migrations/20260625023442_init/migration.sql",
+    "db:apply:remote": "wrangler d1 execute brain-db --remote --file=prisma/migrations/20260625023442_init/migration.sql"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.19.11",
+    "@prisma/adapter-d1": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "lucide-react": "^1.21.0",
     "next": "16.2.9",
+    "prisma": "^7.8.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260625.1",
+    "@libsql/client": "^0.17.4",
+    "@prisma/adapter-libsql": "^7.8.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -21,6 +34,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.104.0"
   }
 }
