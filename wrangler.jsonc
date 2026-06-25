@@ -3,7 +3,9 @@
   "name": "brain-app",
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-01-01",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
@@ -12,8 +14,7 @@
     {
       "binding": "DB",
       "database_name": "brain-db",
-      // Substitua pelo ID gerado em: wrangler d1 create brain-db
-      "database_id": "PLACEHOLDER_RUN_wrangler_d1_create"
+      "database_id": "9752006d-05a2-4f05-bcab-284c0c9086a5"
     }
   ],
   "ai": {
