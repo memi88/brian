@@ -4,14 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "build:worker": "opennextjs-cloudflare build",
     "dev:worker": "wrangler dev",
     "deploy": "opennextjs-cloudflare deploy",
     "db:apply:local": "wrangler d1 execute brain-db --local --file=prisma/migrations/20260625023442_init/migration.sql",
-    "db:apply:remote": "wrangler d1 execute brain-db --remote --file=prisma/migrations/20260625023442_init/migration.sql"
+    "db:apply:remote": "wrangler d1 execute brain-db --remote --file=prisma/migrations/20260625023442_init/migration.sql",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.19.11",
