@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import { getDB } from "@/lib/db";
+
+export const dynamic = "force-dynamic";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { PacienteForm } from "@/components/pacientes/PacienteForm";
 
