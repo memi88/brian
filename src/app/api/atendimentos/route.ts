@@ -10,26 +10,23 @@ export async function POST(req: NextRequest) {
   }
 
   const prisma = await getDB();
-  const atendimento = await prisma.$transaction(async (tx) => {
-    const novo = await tx.atendimento.create({
-      data: {
-        pacienteId,
-        data: new Date(data),
-        horario: horario?.trim() || null,
-        resumo: resumo?.trim() || null,
-        atividades: atividades?.trim() || null,
-      },
-    });
 
-    if (planoId) {
-      await tx.planoSessao.update({
-        where: { id: planoId },
-        data: { atendimentoId: novo.id },
-      });
-    }
-
-    return novo;
+  const atendimento = await prisma.atendimento.create({
+    data: {
+      pacienteId,
+      data: new Date(data),
+      horario: horario?.trim() || null,
+      resumo: resumo?.trim() || null,
+      atividades: atividades?.trim() || null,
+    },
   });
+
+  if (planoId) {
+    await prisma.planoSessao.update({
+      where: { id: planoId },
+      data: { atendimentoId: atendimento.id },
+    });
+  }
 
   return NextResponse.json(atendimento, { status: 201 });
 }
