@@ -36,6 +36,7 @@ export async function POST(req: NextRequest, { params }: Params) {
 
       const result = (await ctx.env.AI.run("@cf/openai/whisper", {
         audio: [...new Uint8Array(audioBuffer)],
+        language: "pt",
       })) as WhisperResult;
 
       transcricaoRaw = result.text ?? "";
