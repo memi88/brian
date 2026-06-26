@@ -103,12 +103,14 @@ export default function CategoriasPage() {
               onKeyDown={(e) => { if (e.key === "Enter") handleAdd(); if (e.key === "Escape") setAdding(false); }}
             />
             <div>
-              <label className="text-label-md text-on-surface block mb-1.5">Cor</label>
-              <div className="flex gap-2 flex-wrap">
+              <p id="cor-label-add" className="text-label-md text-on-surface block mb-1.5">Cor</p>
+              <div className="flex gap-2 flex-wrap" role="group" aria-labelledby="cor-label-add">
                 {CORES_SUGERIDAS.map((c) => (
                   <button
                     key={c}
                     onClick={() => setNovaCor(c)}
+                    aria-label={`Cor ${c}`}
+                    aria-pressed={novaCor === c}
                     className="w-7 h-7 rounded-full border-2 transition-transform hover:scale-110"
                     style={{
                       backgroundColor: c,
@@ -121,7 +123,7 @@ export default function CategoriasPage() {
                   value={novaCor}
                   onChange={(e) => setNovaCor(e.target.value)}
                   className="w-7 h-7 rounded-full border border-border cursor-pointer"
-                  title="Cor personalizada"
+                  aria-label="Cor personalizada"
                 />
               </div>
             </div>
@@ -158,11 +160,13 @@ export default function CategoriasPage() {
                     autoFocus
                     onKeyDown={(e) => { if (e.key === "Enter") handleEdit(c.id); if (e.key === "Escape") setEditingId(null); }}
                   />
-                  <div className="flex gap-2 flex-wrap">
+                  <div className="flex gap-2 flex-wrap" role="group" aria-label="Cor">
                     {CORES_SUGERIDAS.map((cor) => (
                       <button
                         key={cor}
                         onClick={() => setEditCor(cor)}
+                        aria-label={`Cor ${cor}`}
+                        aria-pressed={editCor === cor}
                         className="w-6 h-6 rounded-full border-2 transition-transform hover:scale-110"
                         style={{
                           backgroundColor: cor,
@@ -175,6 +179,7 @@ export default function CategoriasPage() {
                       value={editCor}
                       onChange={(e) => setEditCor(e.target.value)}
                       className="w-6 h-6 rounded-full border border-border cursor-pointer"
+                      aria-label="Cor personalizada"
                     />
                   </div>
                   <div className="flex gap-2">

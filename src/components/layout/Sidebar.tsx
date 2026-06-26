@@ -43,7 +43,6 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* Mobile bottom nav */}
     </aside>
   );
 }

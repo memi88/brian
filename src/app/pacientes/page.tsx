@@ -53,8 +53,8 @@ export default async function PacientesPage() {
               href={`/pacientes/${p.id}`}
               className="flex items-center justify-between px-6 py-4 hover:bg-surface-low transition-colors"
             >
-              <div className="flex flex-col gap-0.5">
-                <span className="text-body-md font-semibold text-on-surface">{p.nome}</span>
+              <div className="flex flex-col gap-0.5 min-w-0">
+                <span className="text-body-md font-semibold text-on-surface truncate">{p.nome}</span>
                 <span className="text-body-sm text-text-secondary">
                   {p.dataNascimento
                     ? `${calcularIdade(p.dataNascimento)} anos · `

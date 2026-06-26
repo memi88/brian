@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Sidebar } from "@/components/layout/Sidebar";
+import { Sidebar, BottomNav } from "@/components/layout/Sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,8 +32,9 @@ export default function RootLayout({
       <body className={`${inter.className} h-full bg-surface text-on-surface antialiased`}>
         <div className="flex h-full">
           <Sidebar />
-          <main className="flex-1 overflow-y-auto p-6 md:p-8">{children}</main>
+          <main className="flex-1 overflow-y-auto p-6 pb-20 md:p-8">{children}</main>
         </div>
+        <BottomNav />
       </body>
     </html>
   );

@@ -22,7 +22,7 @@ export default async function GravarPage({ params }: Params) {
   if (!avaliacao) notFound();
 
   return (
-    <div className="max-w-lg mx-auto">
+    <div className="max-w-lg">
       <PageHeader
         title="Teste de Fluência Verbal"
         subtitle={`${avaliacao.paciente.nome} — ${avaliacao.categoria.nome}`}

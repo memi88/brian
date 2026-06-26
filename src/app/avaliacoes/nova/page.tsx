@@ -158,7 +158,7 @@ export default function NovaAvaliacaoPage() {
           </Card>
         )}
 
-        {erro && <p className="text-label-sm text-tertiary">{erro}</p>}
+        {erro && <p className="text-label-sm text-error">{erro}</p>}
 
         <Button type="submit" disabled={enviando}>
           {enviando ? "Preparando..." : "Iniciar avaliação"}

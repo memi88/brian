@@ -101,7 +101,7 @@ export default async function AvaliacaoPage({ params }: Params) {
           <CardHeader>
             <CardTitle>Totais</CardTitle>
           </CardHeader>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
             {[
               { label: "Total", value: avaliacao.totalPalavras, color: "text-on-surface" },
               { label: "Válidas", value: avaliacao.totalValidas, color: "text-primary-dark" },
@@ -122,7 +122,7 @@ export default async function AvaliacaoPage({ params }: Params) {
           <CardHeader>
             <CardTitle>Válidas por bloco</CardTitle>
           </CardHeader>
-          <div className="grid grid-cols-5 gap-2">
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
             {BLOCOS.map((b) => {
               const count = avaliacao.palavras.filter((p) => p.bloco === b.index && p.tipo === "VALIDA").length;
               return (

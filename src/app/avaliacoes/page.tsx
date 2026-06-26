@@ -75,8 +75,8 @@ export default async function AvaliacoesPage() {
             <Link key={a.id} href={`/avaliacoes/${a.id}`} className="block">
               <Card className="flex flex-col sm:flex-row sm:items-center gap-3 hover:bg-surface-low transition-colors cursor-pointer">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-label-md font-semibold text-on-surface">{a.paciente.nome}</span>
+                  <div className="flex items-center gap-2 mb-1 min-w-0">
+                    <span className="text-label-md font-semibold text-on-surface truncate">{a.paciente.nome}</span>
                     <span
                       className="inline-block w-2 h-2 rounded-full shrink-0"
                       style={{ backgroundColor: a.categoria.cor }}

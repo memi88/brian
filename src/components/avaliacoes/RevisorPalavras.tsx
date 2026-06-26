@@ -134,7 +134,7 @@ export function RevisorPalavras({ avaliacaoId, palavrasIniciais }: RevisorPalavr
   return (
     <div className="flex flex-col gap-6">
       {/* Totais */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+      <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
         {[
           { label: "Total", value: totals.total, color: "text-on-surface" },
           { label: "Válidas", value: totals.validas, color: "text-primary-dark" },
@@ -183,7 +183,7 @@ export function RevisorPalavras({ avaliacaoId, palavrasIniciais }: RevisorPalavr
               {blocoWords.map((p) => (
                 editingId === p.id ? (
                   <div key={p.id} className="flex flex-col gap-1.5 border border-primary/30 rounded-lg p-2 bg-primary/5 w-full sm:w-auto">
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <input
                         className="border border-border rounded px-2 py-1 text-body-sm bg-surface-low w-28 focus:outline-none focus:border-primary"
                         value={editTexto}
@@ -192,6 +192,7 @@ export function RevisorPalavras({ avaliacaoId, palavrasIniciais }: RevisorPalavr
                         onKeyDown={(e) => { if (e.key === "Enter") saveEdit(); if (e.key === "Escape") setEditingId(null); }}
                       />
                       <select
+                        aria-label="Tipo da palavra"
                         className="border border-border rounded px-2 py-1 text-label-sm bg-surface-low focus:outline-none focus:border-primary"
                         value={editTipo}
                         onChange={(e) => setEditTipo(e.target.value as TipoPalavra)}
@@ -201,6 +202,7 @@ export function RevisorPalavras({ avaliacaoId, palavrasIniciais }: RevisorPalavr
                         ))}
                       </select>
                       <select
+                        aria-label="Bloco"
                         className="border border-border rounded px-2 py-1 text-label-sm bg-surface-low focus:outline-none focus:border-primary"
                         value={editBloco}
                         onChange={(e) => setEditBloco(Number(e.target.value))}
@@ -237,15 +239,15 @@ export function RevisorPalavras({ avaliacaoId, palavrasIniciais }: RevisorPalavr
                     )}
                     <button
                       onClick={() => startEdit(p)}
-                      className="opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity ml-0.5 text-current/60 hover:text-current"
-                      title="Editar"
+                      className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity ml-0.5 text-current/60 hover:text-current"
+                      aria-label="Editar palavra"
                     >
                       <Pencil size={11} />
                     </button>
                     <button
                       onClick={() => deletePalavra(p.id)}
-                      className="opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity text-current/60 hover:text-current"
-                      title="Remover"
+                      className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity text-current/60 hover:text-current"
+                      aria-label="Remover palavra"
                     >
                       <X size={12} />
                     </button>
@@ -265,6 +267,7 @@ export function RevisorPalavras({ avaliacaoId, palavrasIniciais }: RevisorPalavr
                     onKeyDown={(e) => { if (e.key === "Enter") addPalavra(b.index); if (e.key === "Escape") setAddingBloco(null); }}
                   />
                   <select
+                    aria-label="Tipo da palavra"
                     className="border border-border rounded px-2 py-1 text-label-sm bg-surface-low focus:outline-none focus:border-primary"
                     value={novaTipo}
                     onChange={(e) => setNovaTipo(e.target.value as TipoPalavra)}

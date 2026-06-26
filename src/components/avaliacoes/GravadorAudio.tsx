@@ -259,7 +259,7 @@ export function GravadorAudio({ avaliacaoId, categoria, paciente }: GravadorAudi
       {(status === "idle" || status === "error") && (
         <button
           onClick={handleSkipTranscricao}
-          className="text-label-sm text-text-secondary underline hover:text-primary transition-colors"
+          className="text-label-sm text-text-secondary underline hover:text-primary transition-colors py-3"
         >
           Pular transcrição automática — inserir palavras manualmente
         </button>

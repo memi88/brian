@@ -144,7 +144,7 @@ export function PlanoForm({ pacientes, defaultPacienteId, contextoInicial }: Pla
         required
       />
 
-      {error && <p className="text-label-sm text-tertiary">{error}</p>}
+      {error && <p className="text-label-sm text-error">{error}</p>}
 
       <div className="flex gap-3">
         <Button type="submit" disabled={isPending}>

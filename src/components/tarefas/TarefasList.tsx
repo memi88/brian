@@ -173,7 +173,7 @@ function TarefaItem({
         type="button"
         onClick={onDelete}
         disabled={disabled}
-        className="opacity-0 group-hover:opacity-100 transition-opacity text-text-secondary hover:text-error"
+        className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity text-text-secondary hover:text-error"
         aria-label="Remover tarefa"
       >
         <Trash2 size={14} />

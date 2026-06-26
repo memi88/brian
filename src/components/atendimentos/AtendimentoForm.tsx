@@ -151,7 +151,7 @@ export function AtendimentoForm({ pacienteId, plano, ultimoAtendimento }: Atendi
 
       {/* Formulário */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-4">
           <Input
             label="Data *"
             type="date"
