@@ -34,19 +34,21 @@ export async function POST(req: NextRequest, { params }: Params) {
       const { getCloudflareContext } = await import("@opennextjs/cloudflare");
       const ctx = getCloudflareContext() as unknown as { env: CloudflareEnv };
 
-      const [result] = await Promise.all([
-        ctx.env.AI.run("@cf/openai/whisper-large-v3-turbo", {
-          audio: [...new Uint8Array(audioBuffer)],
-        }) as Promise<WhisperResult>,
-        (async () => {
-          const key = `avaliacoes/${id}/audio.webm`;
-          await ctx.env.AUDIO.put(key, audioBuffer);
-          audioKey = key;
-        })(),
-      ]);
+      const result = (await ctx.env.AI.run("@cf/openai/whisper-large-v3-turbo", {
+        audio: [...new Uint8Array(audioBuffer)],
+      })) as WhisperResult;
 
       transcricaoRaw = result.text ?? "";
       palavrasRaw = result.words ?? [];
+
+      // Upload ao R2 é não-fatal: falha não impede a transcrição
+      try {
+        const key = `avaliacoes/${id}/audio.webm`;
+        await ctx.env.AUDIO.put(key, audioBuffer);
+        audioKey = key;
+      } catch {
+        // continua sem áudio armazenado
+      }
     } else {
       const accountId = process.env.CF_ACCOUNT_ID;
       const apiToken = process.env.CF_API_TOKEN;
@@ -71,7 +73,8 @@ export async function POST(req: NextRequest, { params }: Params) {
       transcricaoRaw = data.result?.text ?? "";
       palavrasRaw = data.result?.words ?? [];
     }
-  } catch {
+  } catch (err) {
+    console.error("[transcrever] erro na transcrição:", err);
     return NextResponse.json({ error: "Erro ao transcrever áudio" }, { status: 500 });
   }
 
