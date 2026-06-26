@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { formatarData } from "@/lib/utils";
 import { ArrowLeft, CheckCircle, Clock, ClipboardList } from "lucide-react";
+import { BotaoDeletarAvaliacao } from "@/components/avaliacoes/BotaoDeletarAvaliacao";
 
 export const dynamic = "force-dynamic";
 
@@ -165,15 +166,18 @@ export default async function AvaliacaoPage({ params }: Params) {
           );
         })}
 
-        <div className="pt-2 flex gap-3">
-          <Link href={`/pacientes/${avaliacao.paciente.id}`}>
-            <Button variant="outlined">Ver paciente</Button>
-          </Link>
-          {!avaliacao.revisaoCompleta && (
-            <Link href={`/avaliacoes/${id}/revisar`}>
-              <Button>Revisar palavras</Button>
+        <div className="pt-2 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+          <div className="flex gap-3">
+            <Link href={`/pacientes/${avaliacao.paciente.id}`}>
+              <Button variant="outlined">Ver paciente</Button>
             </Link>
-          )}
+            {!avaliacao.revisaoCompleta && (
+              <Link href={`/avaliacoes/${id}/revisar`}>
+                <Button>Revisar palavras</Button>
+              </Link>
+            )}
+          </div>
+          <BotaoDeletarAvaliacao avaliacaoId={id} />
         </div>
       </div>
     </div>

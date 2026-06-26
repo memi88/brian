@@ -108,7 +108,10 @@ export function GravadorAudio({ avaliacaoId, tipo, paciente, duracaoTotal }: Gra
           ? "audio/mp4"
           : "";
 
-      const mr = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+      const mr = new MediaRecorder(stream, {
+        ...(mimeType ? { mimeType } : {}),
+        audioBitsPerSecond: 32000,
+      });
       mediaRecorderRef.current = mr;
       chunksRef.current = [];
 
