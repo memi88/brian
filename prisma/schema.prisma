@@ -82,7 +82,9 @@ model CategoriaSemantica {
 model Avaliacao {
   id               String   @id @default(cuid())
   pacienteId       String
-  categoriaId      String
+  categoriaId      String?
+  tipo             String   @default("SEMANTICA") // LIVRE | FONEMICA | SEMANTICA
+  audioUrl         String?
   dataAplicacao    DateTime @default(now())
   duracaoSegundos  Int?
   totalPalavras    Int      @default(0)
@@ -95,8 +97,8 @@ model Avaliacao {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  paciente  Paciente           @relation(fields: [pacienteId], references: [id])
-  categoria CategoriaSemantica @relation(fields: [categoriaId], references: [id])
+  paciente  Paciente            @relation(fields: [pacienteId], references: [id])
+  categoria CategoriaSemantica? @relation(fields: [categoriaId], references: [id])
   palavras  Palavra[]
 }
 

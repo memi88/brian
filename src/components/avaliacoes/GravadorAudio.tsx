@@ -6,13 +6,18 @@ import { Mic, Pause, Play, RotateCcw, StopCircle } from "lucide-react";
 
 interface GravadorAudioProps {
   avaliacaoId: string;
-  categoria: string;
+  tipo: string;
   paciente: string;
+  duracaoTotal: number;
 }
 
 type Status = "idle" | "recording" | "paused" | "processing" | "error";
 
-const DURACAO_TOTAL = 150; // 2:30 em segundos
+const TIPO_INSTRUCAO: Record<string, string> = {
+  LIVRE: "Peça ao paciente que diga o máximo de palavras que conseguir até o tempo encerrar.",
+  FONEMICA: "Peça ao paciente que diga palavras que começam com o fonema combinado até o tempo encerrar.",
+  SEMANTICA: "Peça ao paciente que diga palavras da categoria combinada até o tempo encerrar.",
+};
 
 function formatTempo(s: number): string {
   const m = Math.floor(s / 60);
@@ -20,10 +25,10 @@ function formatTempo(s: number): string {
   return `${m}:${sec.toString().padStart(2, "0")}`;
 }
 
-export function GravadorAudio({ avaliacaoId, categoria, paciente }: GravadorAudioProps) {
+export function GravadorAudio({ avaliacaoId, tipo, paciente, duracaoTotal }: GravadorAudioProps) {
   const router = useRouter();
   const [status, setStatus] = useState<Status>("idle");
-  const [tempo, setTempo] = useState(DURACAO_TOTAL);
+  const [tempo, setTempo] = useState(duracaoTotal);
   const [erroMsg, setErroMsg] = useState("");
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -77,9 +82,9 @@ export function GravadorAudio({ avaliacaoId, categoria, paciente }: GravadorAudi
       timerRef.current = setInterval(() => {
         setTempo((prev) => {
           const next = prev - 1;
-          tempoDecorridoRef.current = DURACAO_TOTAL - next;
+          tempoDecorridoRef.current = duracaoTotal - next;
           if (next <= 0) {
-            handleStop(DURACAO_TOTAL);
+            handleStop(duracaoTotal);
             return 0;
           }
           return next;
@@ -89,7 +94,7 @@ export function GravadorAudio({ avaliacaoId, categoria, paciente }: GravadorAudi
       clearTimer();
     }
     return clearTimer;
-  }, [status, handleStop]);
+  }, [status, handleStop, duracaoTotal]);
 
   async function handleStart() {
     setErroMsg("");
@@ -133,7 +138,7 @@ export function GravadorAudio({ avaliacaoId, categoria, paciente }: GravadorAudi
     chunksRef.current = [];
     tempoDecorridoRef.current = 0;
     setStatus("idle");
-    setTempo(DURACAO_TOTAL);
+    setTempo(duracaoTotal);
     setErroMsg("");
   }
 
@@ -141,20 +146,18 @@ export function GravadorAudio({ avaliacaoId, categoria, paciente }: GravadorAudi
     router.push(`/avaliacoes/${avaliacaoId}/revisar`);
   }
 
-  const progress = (DURACAO_TOTAL - tempo) / DURACAO_TOTAL;
+  const progress = (duracaoTotal - tempo) / duracaoTotal;
   const radius = 60;
   const circumference = 2 * Math.PI * radius;
 
   const ringColor =
     status === "recording" ? "var(--color-tertiary)"
-    : status === "processing" ? "var(--color-primary)"
     : "var(--color-primary)";
 
   return (
     <div className="flex flex-col items-center gap-8">
       <div className="text-center">
         <p className="text-label-md text-text-secondary">Paciente: <strong className="text-on-surface">{paciente}</strong></p>
-        <p className="text-label-md text-text-secondary">Categoria: <strong className="text-on-surface">{categoria}</strong></p>
       </div>
 
       {/* Circular timer */}
@@ -248,7 +251,7 @@ export function GravadorAudio({ avaliacaoId, categoria, paciente }: GravadorAudi
 
       {status === "recording" && (
         <p className="text-body-sm text-text-secondary text-center max-w-sm">
-          Peça ao paciente que diga o máximo de palavras da categoria <strong>{categoria}</strong> até o tempo encerrar.
+          {TIPO_INSTRUCAO[tipo] ?? TIPO_INSTRUCAO.LIVRE}
         </p>
       )}
 

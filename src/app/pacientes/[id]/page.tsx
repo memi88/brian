@@ -142,12 +142,14 @@ export default async function PacientePage({ params }: Params) {
                     href={`/avaliacoes/${av.id}`}
                     className="flex items-center gap-3 px-6 py-3 hover:bg-surface-low transition-colors"
                   >
-                    <span
-                      className="w-2.5 h-2.5 rounded-full shrink-0"
-                      style={{ backgroundColor: av.categoria.cor }}
-                    />
+                    {av.categoria && (
+                      <span
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        style={{ backgroundColor: av.categoria.cor }}
+                      />
+                    )}
                     <div className="flex-1 min-w-0">
-                      <span className="text-label-md text-on-surface">{av.categoria.nome}</span>
+                      <span className="text-label-md text-on-surface">{av.categoria?.nome ?? av.tipo}</span>
                       <span className="text-label-sm text-text-secondary ml-2">{formatarData(av.dataAplicacao)}</span>
                     </div>
                     {av.revisaoCompleta ? (

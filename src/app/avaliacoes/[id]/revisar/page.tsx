@@ -9,6 +9,16 @@ export const dynamic = "force-dynamic";
 
 type Params = { params: Promise<{ id: string }> };
 
+const TIPO_LABELS: Record<string, string> = {
+  LIVRE: "Fluência Verbal Livre",
+  FONEMICA: "Fluência Verbal Fonêmica",
+  SEMANTICA: "Fluência Verbal Semântica",
+};
+
+function getNumBlocos(tipo: string): number {
+  return tipo === "LIVRE" ? 5 : 4;
+}
+
 export default async function RevisarPage({ params }: Params) {
   const { id } = await params;
   const prisma = await getDB();
@@ -17,12 +27,13 @@ export default async function RevisarPage({ params }: Params) {
     where: { id },
     include: {
       paciente: { select: { nome: true } },
-      categoria: { select: { nome: true } },
       palavras: { orderBy: [{ bloco: "asc" }, { timestamp: "asc" }] },
     },
   });
 
   if (!avaliacao) notFound();
+
+  const tipoLabel = TIPO_LABELS[avaliacao.tipo] ?? "Fluência Verbal";
 
   return (
     <div className="max-w-2xl">
@@ -38,7 +49,7 @@ export default async function RevisarPage({ params }: Params) {
 
       <PageHeader
         title="Revisão das palavras"
-        subtitle={`${avaliacao.paciente.nome} — ${avaliacao.categoria.nome}`}
+        subtitle={`${avaliacao.paciente.nome} — ${tipoLabel}`}
       />
 
       <RevisorPalavras
@@ -47,10 +58,10 @@ export default async function RevisarPage({ params }: Params) {
           id: p.id,
           texto: p.texto,
           bloco: p.bloco,
-          tipo: p.tipo as "VALIDA" | "REPETICAO" | "INTRUSAO" | "NEOLOGISMO",
           timestamp: p.timestamp,
         }))}
-        duracaoSegundos={avaliacao.duracaoSegundos}
+        numBlocos={getNumBlocos(avaliacao.tipo)}
+        hasAudio={!!avaliacao.audioUrl}
       />
     </div>
   );

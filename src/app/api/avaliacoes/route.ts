@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDB } from "@/lib/db";
 
+const TIPOS_VALIDOS = ["LIVRE", "FONEMICA", "SEMANTICA"] as const;
+type TipoAvaliacao = (typeof TIPOS_VALIDOS)[number];
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const pacienteId = searchParams.get("pacienteId");
@@ -20,17 +23,19 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { pacienteId, categoriaId, nomePacienteNovo } = body;
+  const { pacienteId, categoriaId, nomePacienteNovo, tipo } = body;
 
-  if (!categoriaId) {
-    return NextResponse.json({ error: "categoriaId é obrigatório" }, { status: 400 });
+  if (!tipo || !TIPOS_VALIDOS.includes(tipo as TipoAvaliacao)) {
+    return NextResponse.json(
+      { error: "tipo é obrigatório: LIVRE, FONEMICA ou SEMANTICA" },
+      { status: 400 }
+    );
   }
 
   const prisma = await getDB();
 
   let pid = pacienteId;
 
-  // Create new patient on the fly if name provided
   if (!pid && nomePacienteNovo?.trim()) {
     const novoPaciente = await prisma.paciente.create({
       data: { nome: nomePacienteNovo.trim() },
@@ -43,7 +48,11 @@ export async function POST(req: NextRequest) {
   }
 
   const avaliacao = await prisma.avaliacao.create({
-    data: { pacienteId: pid, categoriaId },
+    data: {
+      pacienteId: pid,
+      tipo,
+      ...(categoriaId && { categoriaId }),
+    },
   });
 
   return NextResponse.json(avaliacao, { status: 201 });

@@ -6,6 +6,13 @@ type Params = { params: Promise<{ id: string }> };
 type WhisperWord = { word: string; start: number; end: number };
 type WhisperResult = { text?: string; words?: WhisperWord[] };
 
+type CloudflareEnv = {
+  AI: { run: (model: string, input: unknown) => Promise<unknown> };
+  AUDIO: {
+    put: (key: string, value: ArrayBuffer) => Promise<void>;
+  };
+};
+
 export async function POST(req: NextRequest, { params }: Params) {
   const { id } = await params;
 
@@ -20,16 +27,24 @@ export async function POST(req: NextRequest, { params }: Params) {
 
   let transcricaoRaw = "";
   let palavrasRaw: WhisperWord[] = [];
+  let audioKey: string | null = null;
 
   try {
     if (process.env.NODE_ENV === "production") {
       const { getCloudflareContext } = await import("@opennextjs/cloudflare");
-      const ctx = getCloudflareContext() as unknown as {
-        env: { AI: { run: (model: string, input: unknown) => Promise<unknown> } };
-      };
-      const result = (await ctx.env.AI.run("@cf/openai/whisper-large-v3-turbo", {
-        audio: [...new Uint8Array(audioBuffer)],
-      })) as WhisperResult;
+      const ctx = getCloudflareContext() as unknown as { env: CloudflareEnv };
+
+      const [result] = await Promise.all([
+        ctx.env.AI.run("@cf/openai/whisper-large-v3-turbo", {
+          audio: [...new Uint8Array(audioBuffer)],
+        }) as Promise<WhisperResult>,
+        (async () => {
+          const key = `avaliacoes/${id}/audio.webm`;
+          await ctx.env.AUDIO.put(key, audioBuffer);
+          audioKey = key;
+        })(),
+      ]);
+
       transcricaoRaw = result.text ?? "";
       palavrasRaw = result.words ?? [];
     } else {
@@ -62,6 +77,9 @@ export async function POST(req: NextRequest, { params }: Params) {
 
   const prisma = await getDB();
 
+  const avaliacaoInfo = await prisma.avaliacao.findUnique({ where: { id }, select: { tipo: true } });
+  const maxBloco = avaliacaoInfo?.tipo === "LIVRE" ? 4 : 3;
+
   await prisma.palavra.deleteMany({ where: { avaliacaoId: id } });
 
   const palavras = await Promise.all(
@@ -71,7 +89,7 @@ export async function POST(req: NextRequest, { params }: Params) {
           avaliacaoId: id,
           texto: w.word.trim().toLowerCase(),
           timestamp: w.start,
-          bloco: Math.min(Math.floor(w.start / 30), 4),
+          bloco: Math.min(Math.floor(w.start / 30), maxBloco),
           tipo: "VALIDA",
         },
       })
@@ -87,7 +105,8 @@ export async function POST(req: NextRequest, { params }: Params) {
       totalRepeticoes: 0,
       totalIntrusoes: 0,
       totalNeologismos: 0,
-      ...(duracaoSegundos !== null && { duracaoSegundos }),
+      ...(duracaoSegundos !== null ? { duracaoSegundos } : {}),
+      ...(audioKey !== null ? { audioUrl: audioKey } : {}),
     },
   });
 

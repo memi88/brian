@@ -13,26 +13,21 @@ export const dynamic = "force-dynamic";
 type Params = { params: Promise<{ id: string }> };
 
 const TIPO_LABELS: Record<string, string> = {
-  VALIDA: "Válida",
-  REPETICAO: "Repetição",
-  INTRUSAO: "Intrusão",
-  NEOLOGISMO: "Neologismo",
+  LIVRE: "Fluência Verbal Livre",
+  FONEMICA: "Fluência Verbal Fonêmica",
+  SEMANTICA: "Fluência Verbal Semântica",
 };
 
-const TIPO_COLORS: Record<string, string> = {
-  VALIDA: "bg-primary/15 text-primary-dark border-primary/30",
-  REPETICAO: "bg-tertiary/15 text-tertiary border-tertiary/30",
-  INTRUSAO: "bg-neutral/15 text-neutral border-neutral/30",
-  NEOLOGISMO: "bg-secondary/30 text-on-surface border-secondary/50",
-};
-
-const BLOCOS = [
-  { label: "Bloco 1", intervalo: "0 – 30s", index: 0 },
-  { label: "Bloco 2", intervalo: "30 – 60s", index: 1 },
-  { label: "Bloco 3", intervalo: "60 – 90s", index: 2 },
-  { label: "Bloco 4", intervalo: "90 – 120s", index: 3 },
-  { label: "Bloco 5", intervalo: "120 – 150s", index: 4 },
-];
+function getBlocos(numBlocos: number) {
+  const all = [
+    { label: "Bloco 1", intervalo: "0 – 30s", index: 0 },
+    { label: "Bloco 2", intervalo: "30 – 60s", index: 1 },
+    { label: "Bloco 3", intervalo: "60 – 90s", index: 2 },
+    { label: "Bloco 4", intervalo: "90 – 120s", index: 3 },
+    { label: "Bloco 5", intervalo: "120 – 150s", index: 4 },
+  ];
+  return all.slice(0, numBlocos);
+}
 
 export default async function AvaliacaoPage({ params }: Params) {
   const { id } = await params;
@@ -48,6 +43,10 @@ export default async function AvaliacaoPage({ params }: Params) {
   });
 
   if (!avaliacao) notFound();
+
+  const numBlocos = avaliacao.tipo === "LIVRE" ? 5 : 4;
+  const BLOCOS = getBlocos(numBlocos);
+  const tipoLabel = TIPO_LABELS[avaliacao.tipo] ?? "Fluência Verbal";
 
   return (
     <div className="max-w-2xl">
@@ -71,7 +70,7 @@ export default async function AvaliacaoPage({ params }: Params) {
 
       <PageHeader
         title="Resultado da avaliação"
-        subtitle={`${avaliacao.paciente.nome} — ${avaliacao.categoria.nome}`}
+        subtitle={`${avaliacao.paciente.nome} — ${tipoLabel}`}
       />
 
       <div className="flex flex-col gap-5">
@@ -94,37 +93,39 @@ export default async function AvaliacaoPage({ params }: Params) {
               {Math.floor(avaliacao.duracaoSegundos / 60)}:{String(avaliacao.duracaoSegundos % 60).padStart(2, "0")}
             </span>
           )}
+          {avaliacao.categoria && (
+            <span className="flex items-center gap-1.5 text-label-sm text-text-secondary">
+              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: avaliacao.categoria.cor }} />
+              {avaliacao.categoria.nome}
+            </span>
+          )}
         </div>
 
         {/* Totais */}
         <Card>
           <CardHeader>
-            <CardTitle>Totais</CardTitle>
+            <CardTitle>Total de palavras</CardTitle>
           </CardHeader>
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
-            {[
-              { label: "Total", value: avaliacao.totalPalavras, color: "text-on-surface" },
-              { label: "Válidas", value: avaliacao.totalValidas, color: "text-primary-dark" },
-              { label: "Repetições", value: avaliacao.totalRepeticoes, color: "text-tertiary" },
-              { label: "Intrusões", value: avaliacao.totalIntrusoes, color: "text-neutral" },
-              { label: "Neologismos", value: avaliacao.totalNeologismos, color: "text-on-surface" },
-            ].map((item) => (
-              <div key={item.label} className="bg-surface-low border border-border rounded-lg p-3 text-center">
-                <div className={`text-2xl font-bold tabular-nums ${item.color}`}>{item.value}</div>
-                <div className="text-label-sm text-text-secondary mt-0.5">{item.label}</div>
-              </div>
-            ))}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-surface-low border border-border rounded-lg p-3 text-center">
+              <div className="text-2xl font-bold tabular-nums text-on-surface">{avaliacao.totalPalavras}</div>
+              <div className="text-label-sm text-text-secondary mt-0.5">Total</div>
+            </div>
+            <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 text-center">
+              <div className="text-2xl font-bold tabular-nums text-primary-dark">{avaliacao.totalValidas}</div>
+              <div className="text-label-sm text-text-secondary mt-0.5">Válidas</div>
+            </div>
           </div>
         </Card>
 
-        {/* Válidas por bloco */}
+        {/* Palavras por bloco */}
         <Card>
           <CardHeader>
-            <CardTitle>Válidas por bloco</CardTitle>
+            <CardTitle>Palavras por bloco</CardTitle>
           </CardHeader>
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+          <div className={`grid gap-2 ${numBlocos === 5 ? "grid-cols-5" : "grid-cols-4"}`}>
             {BLOCOS.map((b) => {
-              const count = avaliacao.palavras.filter((p) => p.bloco === b.index && p.tipo === "VALIDA").length;
+              const count = avaliacao.palavras.filter((p) => p.bloco === b.index).length;
               return (
                 <div key={b.index} className="text-center">
                   <div className="text-2xl font-bold text-on-surface tabular-nums">{count}</div>
@@ -136,7 +137,7 @@ export default async function AvaliacaoPage({ params }: Params) {
           </div>
         </Card>
 
-        {/* Palavras por bloco */}
+        {/* Palavras por bloco (lista) */}
         {BLOCOS.map((b) => {
           const blocoWords = avaliacao.palavras.filter((p) => p.bloco === b.index);
           if (blocoWords.length === 0) return null;
@@ -146,7 +147,7 @@ export default async function AvaliacaoPage({ params }: Params) {
                 <div className="flex items-center justify-between">
                   <CardTitle>{b.label} — {b.intervalo}</CardTitle>
                   <span className="text-label-sm text-primary font-semibold">
-                    {blocoWords.filter((p) => p.tipo === "VALIDA").length} válida{blocoWords.filter((p) => p.tipo === "VALIDA").length !== 1 ? "s" : ""}
+                    {blocoWords.length} palavra{blocoWords.length !== 1 ? "s" : ""}
                   </span>
                 </div>
               </CardHeader>
@@ -154,12 +155,9 @@ export default async function AvaliacaoPage({ params }: Params) {
                 {blocoWords.map((p) => (
                   <span
                     key={p.id}
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-body-sm font-medium ${TIPO_COLORS[p.tipo]}`}
+                    className="inline-flex items-center rounded-full border px-3 py-1 text-body-sm font-medium bg-primary/15 text-primary-dark border-primary/30"
                   >
                     {p.texto}
-                    {p.tipo !== "VALIDA" && (
-                      <span className="text-label-sm opacity-60">({TIPO_LABELS[p.tipo].toLowerCase()})</span>
-                    )}
                   </span>
                 ))}
               </div>
