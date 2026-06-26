@@ -34,7 +34,7 @@ export async function POST(req: NextRequest, { params }: Params) {
       const { getCloudflareContext } = await import("@opennextjs/cloudflare");
       const ctx = getCloudflareContext() as unknown as { env: CloudflareEnv };
 
-      const result = (await ctx.env.AI.run("@cf/openai/whisper-large-v3-turbo", {
+      const result = (await ctx.env.AI.run("@cf/openai/whisper", {
         audio: [...new Uint8Array(audioBuffer)],
       })) as WhisperResult;
 
