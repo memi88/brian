@@ -49,14 +49,6 @@
   --radius-xl: 1.5rem;
   --radius-full: 9999px;
 
-  /* Spacing (8pt grid) */
-  --spacing-xs: 8px;
-  --spacing-sm: 16px;
-  --spacing-md: 24px;
-  --spacing-lg: 32px;
-  --spacing-xl: 48px;
-  --spacing-xxl: 64px;
-
   /* Shadows */
   --shadow-float: 0px 4px 12px rgba(46, 49, 47, 0.05);
 }
