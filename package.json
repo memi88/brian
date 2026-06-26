@@ -16,18 +16,18 @@
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.19.11",
-    "@prisma/adapter-d1": "^7.8.0",
-    "@prisma/client": "^7.8.0",
+    "@prisma/adapter-d1": "^5.22.0",
+    "@prisma/client": "^5.22.0",
     "lucide-react": "^1.21.0",
     "next": "15.5.19",
-    "prisma": "^7.8.0",
+    "prisma": "^5.22.0",
     "react": "19",
     "react-dom": "19"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260625.1",
-    "@libsql/client": "^0.17.4",
-    "@prisma/adapter-libsql": "^7.8.0",
+    "@libsql/client": "^0.8.0",
+    "@prisma/adapter-libsql": "^5.22.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

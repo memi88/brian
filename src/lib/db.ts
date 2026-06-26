@@ -1,10 +1,13 @@
-import { PrismaClient } from "@/generated/prisma/client";
+import { PrismaClient } from "@/generated/prisma";
 
 export async function getDB(): Promise<PrismaClient> {
   if (process.env.NODE_ENV !== "production") {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { PrismaLibSql } = require("@prisma/adapter-libsql");
-    return new PrismaClient({ adapter: new PrismaLibSql({ url: "file:dev.db" }) });
+    const { createClient } = require("@libsql/client");
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { PrismaLibSQL } = require("@prisma/adapter-libsql");
+    const libsql = createClient({ url: "file:dev.db" });
+    return new PrismaClient({ adapter: new PrismaLibSQL(libsql) });
   }
   const { getCloudflareContext } = await import("@opennextjs/cloudflare");
   const { env } = getCloudflareContext();

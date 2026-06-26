@@ -1,10 +1,12 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+  output          = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model Paciente {
@@ -41,21 +43,16 @@ model Atendimento {
 }
 
 model Tarefa {
-  id            String       @id @default(cuid())
+  id            String   @id @default(cuid())
   pacienteId    String
   atendimentoId String?
   descricao     String
-  status        StatusTarefa @default(PENDENTE)
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  status        String   @default("PENDENTE")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   paciente    Paciente     @relation(fields: [pacienteId], references: [id])
   atendimento Atendimento? @relation(fields: [atendimentoId], references: [id])
-}
-
-enum StatusTarefa {
-  PENDENTE
-  CONCLUIDA
 }
 
 // Plano criado antes de um atendimento. Mostra tarefas pendentes do último atendimento.
@@ -104,19 +101,12 @@ model Avaliacao {
 }
 
 model Palavra {
-  id          String      @id @default(cuid())
+  id          String @id @default(cuid())
   avaliacaoId String
   texto       String
   timestamp   Float
   bloco       Int
-  tipo        TipoPalavra @default(VALIDA)
+  tipo        String @default("VALIDA")
 
   avaliacao Avaliacao @relation(fields: [avaliacaoId], references: [id])
-}
-
-enum TipoPalavra {
-  VALIDA
-  REPETICAO
-  INTRUSAO
-  NEOLOGISMO
 }
