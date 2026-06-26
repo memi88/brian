@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "brain-app",
+  "name": "brian",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-06-25",
   "compatibility_flags": [
